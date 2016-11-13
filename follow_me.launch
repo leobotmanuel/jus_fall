@@ -1,0 +1,7 @@
+<launch>
+	<node name="sharp_node" pkg="jus_follower" type="sharp_publisher.py"/>
+	<node name="sharp_reader" pkg="jus_follower" type="sharp_subscriber.py" output="screen"/>
+	<node name="servoL" pkg="jus_follower" type="servoL.py" output="screen"/>
+	<node name="servoR" pkg="jus_follower" type="servoR.py" output="screen"/>
+	<node name="control" pkg="jus_follower" type="follow_me.py"/>
+</launch>
