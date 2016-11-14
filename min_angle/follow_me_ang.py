@@ -9,7 +9,7 @@ from std_msgs.msg import Int32
 izq = 4
 dcho = 5
 # Threshold distance: below, change rotation wheel
-min_dist= 7 # cm from direct measurement- 11.3 cm from calculations
+min_dist= 13 # cm from direct measurement- 11.3 cm from calculations
 min_dist_safe= min_dist+1
 
 # LEFT WHEEL
@@ -29,7 +29,7 @@ def callback(msg):
 dist= 50 #Anything to start
 
 # Used for rospy.Rate (should equal or muliple of rate in 'control' node)
-cycle = 0.25
+cycle = 0.15
 rospy.init_node('follower_control')
 
 # BEGIN SUBSCRIBER
@@ -86,8 +86,13 @@ while not rospy.is_shutdown():
             driving_forward = -1
     else:
         # Move backward
-        speed_L=  left_bk_speed
-        speed_R= right_bk_speed
+        #speed_L=  left_bk_speed
+        #speed_R= right_bk_speed
+
+        # Do a quick rotation INSTEAD
+        speed_L=-1
+        speed_R=-1
+        
         if dist <= min_dist_safe: # Go ahead while in the inner of the table
         #if dist >= min_dist:
             driving_forward = 1
