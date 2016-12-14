@@ -20,7 +20,7 @@ def callback(msg):
 dist= 50 #Anything to start
 
 # Used for rospy.Rate (should equal or muliple of rate in 'control' node)
-cycle = 0.5
+cycle = 0.2
 rospy.init_node('follower_control')
 
 # BEGIN SUBSCRIBER

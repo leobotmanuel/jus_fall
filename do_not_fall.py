@@ -9,7 +9,16 @@ from std_msgs.msg import Int32
 izq = 4
 dcho = 5
 # Threshold distance: below, change rotation wheel
-min_dist= 30 # 23.1 # Corresponds to an output of 250 from Sharp sensor
+min_dist= 13 # cm from direct measurement- 11.3 cm from calculations
+min_dist_safe= min_dist+1
+
+# LEFT WHEEL
+left_fw_speed= 6500# Slow when moving forward
+left_bk_speed= 5500# Also slow when moving backward
+
+# RIGHT WHEEL
+right_fw_speed= 5500# Slow when moving forward
+right_bk_speed= 6500# Also slow when moving backward
 
 # BEGIN CALLBACK
 def callback(msg):
@@ -20,7 +29,7 @@ def callback(msg):
 dist= 50 #Anything to start
 
 # Used for rospy.Rate (should equal or muliple of rate in 'control' node)
-cycle = 0.5
+cycle = 0.15
 rospy.init_node('follower_control')
 
 # BEGIN SUBSCRIBER
@@ -70,15 +79,22 @@ while not rospy.is_shutdown():
     
     if driving_forward == 1: # If driving forward
         # GO AHEAD towards the target
-        speed_L= -1
-        speed_R=  1
-        if dist < min_dist:
+        speed_L= left_fw_speed
+        speed_R=right_fw_speed
+        if dist > min_dist_safe:  #The obstacle is the 'empty' space
+        # if dist < min_dist:
             driving_forward = -1
     else:
         # Move backward
-        speed_L=  1
-        speed_R= -1
-        if dist >= min_dist:
+        #speed_L=  left_bk_speed
+        #speed_R= right_bk_speed
+
+        # Do a quick rotation INSTEAD
+        speed_L=-1
+        speed_R=-1
+        
+        if dist <= min_dist_safe: # Go ahead while in the inner of the table
+        #if dist >= min_dist:
             driving_forward = 1
 
     if driving_forward <> driving_before:
