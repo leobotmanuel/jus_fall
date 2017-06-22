@@ -17,7 +17,11 @@ from std_msgs.msg import Int32
 # END STD_MSGS
 
 # Maestro channel assignment
+# FIRST sensor channel (sensing front-LEFT side of robot)
 sharp=0
+# SECOND sensor channel (sensing front-RIGHT side of robot)
+sharp2=3
+
 # Sharp equation coefficients: dist(cm)= a / (Output-b) - c
 a= 5788
 b= 8.44
@@ -29,6 +33,8 @@ rospy.init_node('sharp_node')
 
 # BEGIN PUB
 pub = rospy.Publisher('sharp_data', Int32,queue_size=10)
+pub2 = rospy.Publisher('sharp_data2', Int32,queue_size=10)
+
 # END PUB
 
 # BEGIN LOOP
@@ -36,9 +42,14 @@ s= m.Controller()
 rate = rospy.Rate(1/cycle)
 
 while not rospy.is_shutdown():
+        # First sensor
         Output=s.getPosition(sharp)
         dist=a/(Output-b)-c
         pub.publish(dist)
+        #Second sensor
+        Output2=s.getPosition(sharp2)
+        dist2=a/(Output2-b)-c
+        pub2.publish(dist2)        
         rate.sleep()
 # END LOOP
 # END ALL
