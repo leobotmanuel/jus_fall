@@ -20,17 +20,11 @@ left_bk_speed= 5500# Also slow when moving backward
 right_fw_speed= 5500# Slow when moving forward
 right_bk_speed= 6500# Also slow when moving backward
 
-# BEGIN CALLBACKs
-#Callback for first sensor
+# BEGIN CALLBACK
 def callback(msg):
     global dist
     dist= msg.data
-#Callback for second sensor
-def callback2(msg):
-    global dist2
-    dist2= msg.data
-##### Aquí debería poder extraer /sharp_data y /sharp_data2
-# END CALLBACKs
+# END CALLBACK
 
 dist= 50 #Anything to start
 
@@ -40,7 +34,6 @@ rospy.init_node('follower_control')
 
 # BEGIN SUBSCRIBER
 sub = rospy.Subscriber('sharp_data', Int32, callback)
-sub2= rospy.Subscriber('sharp_data2', Int32, callback2)
 # END SUBSCRIBER
 ############################################
 # BEGIN PUB: left and right servos speed set
@@ -52,19 +45,16 @@ write_right = rospy.Publisher('speed_right', Int32,queue_size=10)
 ### Preparation of lists to record trajectories
 n=10 # Lenght of records
 # Lists of time, distance and speed
-t=[0] * n
+t= [0] * n
 d=[0] * n
-d2=[0]* n
 v=[0] * n
 t = [float(x) for x in t]
 d = [float(x) for x in d]
-d2= [float(x) for x in d2]
 v = [float(x) for x in v]
 # Initial element in each list
 #t[0]= rospy.Time.now()- rospy.Duration(cycle)
 t[0]= rospy.get_time()
 d[0]= dist
-d2[0]= dist2
 v[0]= 0
 # Obtain the sign of a number
 sign = lambda x: (x>0) - (x<0)
@@ -119,8 +109,7 @@ while not rospy.is_shutdown():
 
     print "Driving forward  ", driving_forward
     print "Time stamp  (s)  = ", t[0]        
-    print "Distance(cm) LEFT- front,channel 0 = ", d[0]
-    print "Distance(cm) RIGHT-front,channel 3 = ", d2[0]
+    print "Distance to target (cm)   = ", d[0]
     print "Relative speed of target (cm/s)= ", v[0]
     print ""
     print "Speed_L= ", speed_L, "Speed_R =", speed_R
